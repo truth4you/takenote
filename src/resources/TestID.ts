@@ -55,4 +55,6 @@ export enum TestID {
   LAST_SYNCED_NOTIFICATION_SYNCING = 'last-synced-notification-syncing',
   LAST_SYNCED_NOTIFICATION_UNSAVED = 'last-synced-notification-unsaved',
   LAST_SYNCED_NOTIFICATION_DATE = 'last-synced-notification-date',
+  DONT_PANIC_NOTE = 'dont-panic-note',
+  DO_PANIC_NOTE = 'do-panic-note',
 }
