@@ -11,6 +11,8 @@ import {
   Settings,
   Sun,
   Moon,
+  Zap,
+  ZapOff,
   Clipboard as ClipboardCmp,
 } from 'react-feather'
 
@@ -22,11 +24,13 @@ import {
   togglePreviewMarkdown,
   toggleDarkTheme,
   updateCodeMirrorOption,
+  togglePanic,
 } from '@/slices/settings'
 import { toggleFavoriteNotes, toggleTrashNotes } from '@/slices/note'
 import { getCategories, getNotes, getSync, getSettings } from '@/selectors'
 import { downloadNotes, isDraftNote, getShortUuid, copyToClipboard } from '@/utils/helpers'
 import { sync } from '@/slices/sync'
+import { LabelText } from '@resources/LabelText'
 
 export const NoteMenuBar = () => {
   // ===========================================================================
@@ -36,7 +40,7 @@ export const NoteMenuBar = () => {
   const { notes, activeNoteId } = useSelector(getNotes)
   const { categories } = useSelector(getCategories)
   const { syncing, lastSynced, pendingSync } = useSelector(getSync)
-  const { darkTheme } = useSelector(getSettings)
+  const { darkTheme, isPanic } = useSelector(getSettings)
 
   // ===========================================================================
   // Other
@@ -53,6 +57,7 @@ export const NoteMenuBar = () => {
 
   const [uuidCopiedText, setUuidCopiedText] = useState<string>('')
   const [isToggled, togglePreviewIcon] = useState<boolean>(false)
+  // const [panic, setPanic] = useState<boolean>(true)
 
   // ===========================================================================
   // Hooks
@@ -83,6 +88,7 @@ export const NoteMenuBar = () => {
   const _toggleDarkTheme = () => dispatch(toggleDarkTheme())
   const _updateCodeMirrorOption = (key: string, value: any) =>
     dispatch(updateCodeMirrorOption({ key, value }))
+  const _togglePanic = () => dispatch(togglePanic())
 
   // ===========================================================================
   // Handlers
@@ -100,6 +106,10 @@ export const NoteMenuBar = () => {
   const togglePreviewHandler = () => {
     togglePreviewIcon(!isToggled)
     _togglePreviewMarkdown()
+  }
+  const panicHandler = () => {
+    // setPanic(!isPanic)
+    _togglePanic()
   }
 
   return (
@@ -145,6 +155,16 @@ export const NoteMenuBar = () => {
             {copyNoteIcon}
             {uuidCopiedText && <span className="uuid-copied-text">{uuidCopiedText}</span>}
             <span className="sr-only">Copy note</span>
+          </button>
+          <button className="note-menu-bar-button" onClick={panicHandler}>
+            {isPanic ? (
+              <ZapOff aria-hidden="true" size={18} />
+            ) : (
+              <Zap aria-hidden="true" size={18} />
+            )}
+            <span className="sr-only">
+              {isPanic ? LabelText.DONT_PANIC_NOTE : LabelText.DO_PANIC_NOTE}
+            </span>
           </button>
         </nav>
       ) : (

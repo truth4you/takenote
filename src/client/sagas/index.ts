@@ -16,6 +16,7 @@ import {
   togglePreviewMarkdown,
   toggleSettingsModal,
   updateNotesSortStrategy,
+  togglePanic,
 } from '@/slices/settings'
 import { SyncAction } from '@/types'
 import { getSettings } from '@/selectors'
@@ -134,6 +135,7 @@ function* rootSaga() {
         updateCodeMirrorOption.type,
         toggleSettingsModal.type,
         updateNotesSortStrategy.type,
+        togglePanic.type,
       ],
       syncSettings
     ),

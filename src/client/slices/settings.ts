@@ -22,6 +22,7 @@ export const initialState: SettingsState = {
   },
   isOpen: false,
   loading: false,
+  isPanic: true,
 }
 
 const settingsSlice = createSlice({
@@ -59,6 +60,10 @@ const settingsSlice = createSlice({
     loadSettingsSuccess: (state, { payload }: PayloadAction<SettingsState>) => {
       return { ...payload, loading: false }
     },
+
+    togglePanic: (state) => {
+      state.isPanic = !state.isPanic
+    },
   },
 })
 
@@ -71,6 +76,7 @@ export const {
   loadSettings,
   loadSettingsError,
   loadSettingsSuccess,
+  togglePanic,
 } = settingsSlice.actions
 
 export default settingsSlice.reducer

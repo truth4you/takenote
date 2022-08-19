@@ -26,7 +26,7 @@ export const NoteEditor: React.FC = () => {
 
   const { pendingSync } = useSelector(getSync)
   const { activeNoteId, loading, notes } = useSelector(getNotes)
-  const { codeMirrorOptions, previewMarkdown } = useSelector(getSettings)
+  const { codeMirrorOptions, previewMarkdown, isPanic } = useSelector(getSettings)
 
   const activeNote = getActiveNote(notes, activeNoteId)
 
@@ -60,6 +60,15 @@ export const NoteEditor: React.FC = () => {
     })
   }
 
+  const panicText = (text: string) => {
+    if (isPanic) return text
+
+    return text
+      .replace(/\*{2}/g, '____BOLD____')
+      .replace(/([^\*])?\*([^\*]+)(\*([^\*])?|$)/g, '$1$2$4')
+      .replace(/____BOLD____/g, '**')
+  }
+
   const renderEditor = () => {
     if (loading) {
       return <div className="empty-editor v-center">Loading...</div>
@@ -69,7 +78,7 @@ export const NoteEditor: React.FC = () => {
       return (
         <PreviewEditor
           directionText={codeMirrorOptions.direction}
-          noteText={activeNote.text}
+          noteText={panicText(activeNote.text)}
           notes={notes}
         />
       )
@@ -79,7 +88,7 @@ export const NoteEditor: React.FC = () => {
       <CodeMirror
         data-testid="codemirror-editor"
         className="editor mousetrap"
-        value={activeNote.text}
+        value={panicText(activeNote.text)}
         options={codeMirrorOptions}
         editorDidMount={(editor) => {
           setTimeout(() => {

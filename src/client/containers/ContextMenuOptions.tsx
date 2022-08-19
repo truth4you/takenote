@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { ArrowUp, Download, Star, Trash, X, Edit2, Clipboard } from 'react-feather'
+import { ArrowUp, Download, Star, Trash, X, Edit2, Clipboard, ZapOff, Zap } from 'react-feather'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { LabelText } from '@resources/LabelText'
@@ -15,11 +15,12 @@ import {
   swapFolder,
   removeCategoryFromNotes,
 } from '@/slices/note'
-import { getCategories, getNotes } from '@/selectors'
+import { getCategories, getNotes, getSettings } from '@/selectors'
 import { Folder, ContextMenuEnum } from '@/utils/enums'
 import { CategoryItem, NoteItem } from '@/types'
 import category, { setCategoryEdit, deleteCategory } from '@/slices/category'
 import { MenuUtilitiesContext } from '@/containers/ContextMenu'
+import { togglePanic } from '@/slices/settings'
 
 export interface ContextMenuOptionsProps {
   clickedItem: NoteItem | CategoryItem
@@ -114,6 +115,8 @@ const NotesOptions: React.FC<NotesOptionsProps> = ({ clickedNote }) => {
 
   const dispatch = useDispatch()
 
+  const { isPanic } = useSelector(getSettings)
+
   const _deleteNotes = (noteIds: string[]) => dispatch(deleteNotes(noteIds))
   const _toggleTrashNotes = (noteId: string) => dispatch(toggleTrashNotes(noteId))
   const _toggleFavoriteNotes = (noteId: string) => dispatch(toggleFavoriteNotes(noteId))
@@ -144,6 +147,7 @@ const NotesOptions: React.FC<NotesOptionsProps> = ({ clickedNote }) => {
     const shortNoteUuid = getShortUuid(note.id)
     copyToClipboard(`{{${shortNoteUuid}}}`)
   }
+  const _togglePanic = () => dispatch(togglePanic())
 
   return !isDraftNote(clickedNote) ? (
     <nav className="options-nav" data-testid={TestID.NOTE_OPTIONS_NAV}>
@@ -206,6 +210,12 @@ const NotesOptions: React.FC<NotesOptionsProps> = ({ clickedNote }) => {
         handler={(e: React.SyntheticEvent) => copyLinkedNoteMarkdownHandler(e, clickedNote)}
         icon={Clipboard}
         text={LabelText.COPY_REFERENCE_TO_NOTE}
+      />
+      <ContextMenuOption
+        dataTestID={isPanic ? TestID.DONT_PANIC_NOTE : TestID.DO_PANIC_NOTE}
+        handler={_togglePanic}
+        icon={isPanic ? ZapOff : Zap}
+        text={isPanic ? LabelText.DONT_PANIC_NOTE : LabelText.DO_PANIC_NOTE}
       />
     </nav>
   ) : null
